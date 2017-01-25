@@ -1,5 +1,5 @@
 {
-  "name": "@5minds/bootstrapper",
+  "name": "@process-engine-js/bootstrapper",
   "publishConfig": {
     "registry": "https://www.npmjs.com"
   },
