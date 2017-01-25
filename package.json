@@ -3,7 +3,7 @@
   "publishConfig": {
     "registry": "https://www.npmjs.com"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The bootstrapper is the entry point for applications",
   "main": "index.js",
   "author": "5Minds IT-Solutions GmbH & Co. KG <info@5minds.de>",
@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/5minds/JS.Foundation#readme",
   "dependencies": {
-    "addict-ioc-nconf": "^1.1.0",
+    "addict-ioc-nconf": "^1.1.1",
     "@process-engine-js/utils": "^1.0.0",
     "bluebird": "^3.4.6"
   },
