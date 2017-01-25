@@ -1,0 +1,31 @@
+{
+  "name": "@5minds/bootstrapper",
+  "publishConfig": {
+    "registry": "https://www.npmjs.com"
+  },
+  "version": "1.0.0",
+  "description": "The bootstrapper is the entry point for applications",
+  "main": "index.js",
+  "author": "5Minds IT-Solutions GmbH & Co. KG <info@5minds.de>",
+  "maintainers": [
+    "Martin Möllenbeck <martin.moellenbeck@5minds.de"
+  ],
+  "contributors": [
+    "Sebastian Meier <sebastian.meier@5minds.de>"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/5minds/JS.Foundation/issues"
+  },
+  "homepage": "https://github.com/5minds/JS.Foundation#readme",
+  "dependencies": {
+    "addict-ioc-nconf": "^1.1.0",
+    "@process-engine-js/utils": "^1.0.0",
+    "bluebird": "^3.4.6"
+  },
+  "devDependencies": {
+    "eslint": "^3.4.0",
+    "eslint-config-5minds": "0.0.3",
+    "eslint-plugin-import": "^1.14.0"
+  }
+}
