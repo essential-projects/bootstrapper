@@ -1,5 +1,5 @@
 {
-  "name": "@process-engine-js/bootstrapper_node",
+  "name": "@process-engine-js/bootstrapper",
   "publishConfig": {
     "registry": "https://www.npmjs.com"
   },
