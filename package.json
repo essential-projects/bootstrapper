@@ -19,6 +19,7 @@
     "bluebird": "^3.5.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.1"
+    "gulp": "^3.9.1",
+    "tsconfig": "^6.0.0"
   }
 }
