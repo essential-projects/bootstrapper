@@ -1,5 +1,5 @@
 import {executeAsExtensionHookAsync as extensionHook} from '@process-engine-js/utils';
-import { DependencyInjectionContainer as Container } from 'addict-ioc';
+import { Container } from 'addict-ioc';
 import * as bluebirdPromise from 'bluebird';
 
 export interface IExtension {
@@ -81,7 +81,8 @@ export class ExtensionBootstrapper {
   }
 
   protected async initializeExtension(extensionKey: string): Promise<void> {
-    const instance: IExtension = this.container.resolve(extensionKey);
+    
+    const instance = this.container.resolve<IExtension>(extensionKey);
 
     await extensionHook(instance.initialize, instance);
     this[instance.name] = instance;

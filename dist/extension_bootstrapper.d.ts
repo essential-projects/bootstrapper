@@ -1,4 +1,4 @@
-import { DependencyInjectionContainer as Container } from 'addict-ioc';
+import { Container } from 'addict-ioc';
 export interface IExtension {
     initialize(): Promise<void>;
     start(): Promise<void>;
