@@ -1,5 +1,5 @@
 import {executeAsExtensionHookAsync as extensionHook} from '@process-engine-js/utils';
-import { Container } from 'addict-ioc';
+import {Container, IInstanceWrapper} from 'addict-ioc';
 import * as bluebirdPromise from 'bluebird';
 
 export interface IExtension {
@@ -10,12 +10,12 @@ export interface IExtension {
 
 export class ExtensionBootstrapper {
 
-  private _container: Container;
+  private _container: Container<IInstanceWrapper<any>>;
   private _extensionDiscoveryTag: string;
   private _extensionInstances: Array<IExtension> = [];
   private _isInitialized: boolean = false;
 
-  constructor(_container: Container, _extensionDiscoveryTag: string) {
+  constructor(_container: Container<IInstanceWrapper<any>>, _extensionDiscoveryTag: string) {
 
     this._container = _container;
     this._extensionDiscoveryTag = _extensionDiscoveryTag;
@@ -35,7 +35,7 @@ export class ExtensionBootstrapper {
     this._isInitialized = initialize;
   }
 
-  protected get container(): Container {
+  protected get container(): Container<IInstanceWrapper<any>> {
     return this._container;
   }
 
@@ -81,7 +81,7 @@ export class ExtensionBootstrapper {
   }
 
   protected async initializeExtension(extensionKey: string): Promise<void> {
-    
+
     const instance = this.container.resolve<IExtension>(extensionKey);
 
     await extensionHook(instance.initialize, instance);

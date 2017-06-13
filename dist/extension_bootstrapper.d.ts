@@ -1,4 +1,4 @@
-import { Container } from 'addict-ioc';
+import { Container, IInstanceWrapper } from 'addict-ioc';
 export interface IExtension {
     initialize(): Promise<void>;
     start(): Promise<void>;
@@ -9,9 +9,9 @@ export declare class ExtensionBootstrapper {
     private _extensionDiscoveryTag;
     private _extensionInstances;
     private _isInitialized;
-    constructor(_container: Container, _extensionDiscoveryTag: string);
+    constructor(_container: Container<IInstanceWrapper<any>>, _extensionDiscoveryTag: string);
     protected isInitialized: boolean;
-    protected readonly container: Container;
+    protected readonly container: Container<IInstanceWrapper<any>>;
     readonly extensionDiscoveryTag: string;
     readonly extensionInstances: Array<IExtension>;
     protected _registerInstanceToIocContainer(instance: IExtension): void;
