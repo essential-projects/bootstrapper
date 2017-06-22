@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("@process-engine-js/utils");
 const bluebirdPromise = require("bluebird");
 class ExtensionBootstrapper {
