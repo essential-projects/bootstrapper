@@ -1,5 +1,6 @@
 define(["require", "exports", "@process-engine-js/utils", "bluebird"], function (require, exports, utils_1, bluebirdPromise) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     class ExtensionBootstrapper {
         constructor(_container, _extensionDiscoveryTag) {
             this._extensionInstances = [];
