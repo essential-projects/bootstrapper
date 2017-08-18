@@ -60,6 +60,7 @@ class ExtensionBootstrapper {
     _discoverExtensions() {
         const discoveredExtensionKeys = this._discoverExtensionKeys(this.extensionDiscoveryTag);
         return Promise.all(discoveredExtensionKeys.map((extensionKey) => {
+            console.log('resolve extension', extensionKey);
             return this.container.resolveAsync(extensionKey);
         }))
             .catch((error) => {
