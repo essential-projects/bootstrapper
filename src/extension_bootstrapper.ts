@@ -2,7 +2,7 @@ import {executeAsExtensionHookAsync as extensionHook} from '@process-engine-js/u
 import {Container, IInstanceWrapper} from 'addict-ioc';
 import * as bluebirdPromise from 'bluebird';
 
-export interface IExtension {y
+export interface IExtension {
   start(): Promise<void>;
   name?: string;
 }
