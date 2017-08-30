@@ -52,13 +52,11 @@ export class ExtensionBootstrapper {
   }
 
   public async start(): Promise<void> {
-    console.log('-----------------asdasd');
     await this.startExtensions();
   }
 
   protected async startExtensions(): Promise<Array<void>> {
     const extensions: Array<IExtension> = await this._discoverExtensions();
-    console.log(extensions);
     return Promise.all(extensions.map((extension: IExtension) => {
       return this.startExtension(extension); 
     }));
@@ -71,11 +69,9 @@ export class ExtensionBootstrapper {
   private _discoverExtensions(): Promise<Array<IExtension>> {
     const discoveredExtensionKeys: Array<string> = this._discoverExtensionKeys(this.extensionDiscoveryTag);
     return Promise.all(discoveredExtensionKeys.map((extensionKey: string) => {
-      console.log('resolve extension', extensionKey);
       return this.container.resolveAsync(extensionKey)
     }))
     .catch((error: Error) => {
-      console.log('discover extensions error', error);
       throw error;
     });
   }

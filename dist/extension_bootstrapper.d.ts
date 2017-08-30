@@ -1,6 +1,5 @@
 import { Container, IInstanceWrapper } from 'addict-ioc';
 export interface IExtension {
-    y: any;
     start(): Promise<void>;
     name?: string;
 }

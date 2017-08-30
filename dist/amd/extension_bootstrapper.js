@@ -39,14 +39,12 @@ define(["require", "exports", "@process-engine-js/utils"], function (require, ex
         }
         start() {
             return __awaiter(this, void 0, void 0, function* () {
-                console.log('-----------------asdasd');
                 yield this.startExtensions();
             });
         }
         startExtensions() {
             return __awaiter(this, void 0, void 0, function* () {
                 const extensions = yield this._discoverExtensions();
-                console.log(extensions);
                 return Promise.all(extensions.map((extension) => {
                     return this.startExtension(extension);
                 }));
@@ -60,11 +58,9 @@ define(["require", "exports", "@process-engine-js/utils"], function (require, ex
         _discoverExtensions() {
             const discoveredExtensionKeys = this._discoverExtensionKeys(this.extensionDiscoveryTag);
             return Promise.all(discoveredExtensionKeys.map((extensionKey) => {
-                console.log('resolve extension', extensionKey);
                 return this.container.resolveAsync(extensionKey);
             }))
                 .catch((error) => {
-                console.log('discover extensions error', error);
                 throw error;
             });
         }
