@@ -3,7 +3,6 @@ import {Container, IInstanceWrapper} from 'addict-ioc';
 import * as bluebirdPromise from 'bluebird';
 
 export interface IExtension {
-  initialize(): Promise<void>;
   start(): Promise<void>;
   name?: string;
 }
@@ -13,7 +12,6 @@ export class ExtensionBootstrapper {
   private _container: Container<IInstanceWrapper<any>>;
   private _extensionDiscoveryTag: string;
   private _extensionInstances: Array<IExtension> = [];
-  private _isInitialized: boolean = false;
 
   constructor(_container: Container<IInstanceWrapper<any>>, _extensionDiscoveryTag: string) {
 
@@ -25,14 +23,6 @@ export class ExtensionBootstrapper {
     }
 
     this._registerInstanceToIocContainer(this);
-  }
-
-  protected get isInitialized(): boolean {
-    return this._isInitialized;
-  }
-
-  protected set isInitialized(initialize: boolean) {
-    this._isInitialized = initialize;
   }
 
   protected get container(): Container<IInstanceWrapper<any>> {
@@ -57,55 +47,33 @@ export class ExtensionBootstrapper {
     }
   }
 
-  public async initialize(): Promise<void> {
-    if (!this.isInitialized) {
-      await this.initializeExtensions();
-      this.isInitialized = true;
-    }
-  }
-
   protected _discoverExtensionKeys(extensionDiscoveryTag: string): Array<string> {
     return this.container.getKeysByTags(extensionDiscoveryTag);
   }
 
-  // tslint:disable-next-line
-  protected initializeExtensions(): Promise<any> {
-
-    const discoveredExtensionKeys: Array<string> = this._discoverExtensionKeys(this.extensionDiscoveryTag);
-    // tslint:disable-next-line
-    const serialPromise: Promise<any> = bluebirdPromise.mapSeries(discoveredExtensionKeys, (extensionKey: string) => {
-      return this.initializeExtension(extensionKey);
-    });
-
-    return serialPromise;
-  }
-
-  protected async initializeExtension(extensionKey: string): Promise<void> {
-
-    const instance = this.container.resolve<IExtension>(extensionKey);
-
-    await extensionHook(instance.initialize, instance);
-    this[instance.name] = instance;
-    this.extensionInstances.push(instance);
-  }
-
   public async start(): Promise<void> {
-    await this.initialize();
     await this.startExtensions();
   }
 
-  // tslint:disable-next-line
-  protected startExtensions(): Promise<any> {
-    // tslint:disable-next-line
-    const serialPromise: Promise<any> = bluebirdPromise.mapSeries(this.extensionInstances, (extensionInstance: any) => {
-      return this.startExtension(extensionInstance);
-    });
-    return serialPromise;
-
+  protected async startExtensions(): Promise<Array<void>> {
+    const extensions: Array<IExtension> = await this._discoverExtensions();
+    return Promise.all(extensions.map((extension: IExtension) => {
+      return this.startExtension(extension); 
+    }));
   }
 
   protected async startExtension(instance: IExtension): Promise<void> {
     await extensionHook(instance.start, instance);
+  }
+
+  private _discoverExtensions(): Promise<Array<IExtension>> {
+    const discoveredExtensionKeys: Array<string> = this._discoverExtensionKeys(this.extensionDiscoveryTag);
+    return Promise.all(discoveredExtensionKeys.map((extensionKey: string) => {
+      return this.container.resolveAsync(extensionKey)
+    }))
+    .catch((error: Error) => {
+      throw error;
+    });
   }
 
 }
