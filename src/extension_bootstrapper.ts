@@ -1,4 +1,4 @@
-import {executeAsExtensionHookAsync as extensionHook} from '@process-engine-js/utils';
+import {runtime} from '@process-engine-js/foundation';
 import {Container, IInstanceWrapper} from 'addict-ioc';
 import * as bluebirdPromise from 'bluebird';
 
@@ -63,7 +63,7 @@ export class ExtensionBootstrapper {
   }
 
   protected async startExtension(instance: IExtension): Promise<void> {
-    await extensionHook(instance.start, instance);
+    await runtime.invokeAsPromiseIfPossible(instance.start, instance);
   }
 
   private _discoverExtensions(): Promise<Array<IExtension>> {
