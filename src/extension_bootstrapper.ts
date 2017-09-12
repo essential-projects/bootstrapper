@@ -69,7 +69,7 @@ export class ExtensionBootstrapper {
   private _discoverExtensions(): Promise<Array<IExtension>> {
     const discoveredExtensionKeys: Array<string> = this._discoverExtensionKeys(this.extensionDiscoveryTag);
     return Promise.all(discoveredExtensionKeys.map((extensionKey: string) => {
-      return this.container.resolveAsync(extensionKey);
+      return this.container.resolveAsync<IExtension>(extensionKey);
     }))
     .catch((error: Error) => {
       throw error;
