@@ -22,5 +22,3 @@ const gulp = require('gulp');
 buildSystem
   .registerPlugin('typescript', gulptraumTypescriptPlugin, typeScriptConfig)
   .registerTasks(gulp);
-
-  
