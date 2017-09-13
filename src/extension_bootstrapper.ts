@@ -1,10 +1,9 @@
 import {runtime} from '@process-engine-js/foundation';
 import {Container, IInstanceWrapper} from 'addict-ioc';
-import * as bluebirdPromise from 'bluebird';
 
 export interface IExtension {
-  start(): Promise<void>;
   name?: string;
+  start(): Promise<void>;
 }
 
 export class ExtensionBootstrapper {
