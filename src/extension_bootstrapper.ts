@@ -3,6 +3,7 @@ import {Container, IInstanceWrapper} from 'addict-ioc';
 
 export interface IExtension {
   name?: string;
+
   start(): Promise<void>;
 }
 
@@ -65,14 +66,11 @@ export class ExtensionBootstrapper {
     await runtime.invokeAsPromiseIfPossible(instance.start, instance);
   }
 
-  private _discoverExtensions(): Promise<Array<IExtension>> {
+  private async _discoverExtensions(): Promise<Array<IExtension>> {
     const discoveredExtensionKeys: Array<string> = this._discoverExtensionKeys(this.extensionDiscoveryTag);
-    return Promise.all(discoveredExtensionKeys.map((extensionKey: string) => {
+    return await Promise.all(discoveredExtensionKeys.map((extensionKey: string) => {
       return this.container.resolveAsync<IExtension>(extensionKey);
-    }))
-    .catch((error: Error) => {
-      throw error;
-    });
+    }));
   }
 
 }
