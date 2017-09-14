@@ -3,7 +3,7 @@
   "publishConfig": {
     "registry": "https://www.npmjs.com"
   },
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "the bootstrapper to start an application",
   "license": "MIT",
   "main": "dist/commonjs/index.js",
@@ -27,7 +27,7 @@
   },
   "scripts": {
     "build": "gulp build",
-    "prepublishOnly": "npm run build && npm run build-schemas && npm run build-doc",
+    "prepare": "npm run build && npm run build-schemas && npm run build-doc",
     "build-doc": "gulp doc",
     "build-schemas": "gulp typescript-schema"
   }
