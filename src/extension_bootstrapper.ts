@@ -66,9 +66,9 @@ export class ExtensionBootstrapper {
     await runtime.invokeAsPromiseIfPossible(instance.start, instance);
   }
 
-  private async _discoverExtensions(): Promise<Array<IExtension>> {
+  private _discoverExtensions(): Promise<Array<IExtension>> {
     const discoveredExtensionKeys: Array<string> = this._discoverExtensionKeys(this.extensionDiscoveryTag);
-    return await Promise.all(discoveredExtensionKeys.map((extensionKey: string) => {
+    return Promise.all(discoveredExtensionKeys.map((extensionKey: string) => {
       return this.container.resolveAsync<IExtension>(extensionKey);
     }));
   }
