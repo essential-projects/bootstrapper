@@ -1,10 +1,10 @@
 import {runtime} from '@process-engine-js/foundation';
 import {Container, IInstanceWrapper} from 'addict-ioc';
-import * as bluebirdPromise from 'bluebird';
 
 export interface IExtension {
-  start(): Promise<void>;
   name?: string;
+
+  start(): Promise<void>;
 }
 
 export class ExtensionBootstrapper {
@@ -57,6 +57,7 @@ export class ExtensionBootstrapper {
 
   protected async startExtensions(): Promise<Array<void>> {
     const extensions: Array<IExtension> = await this._discoverExtensions();
+
     return Promise.all(extensions.map((extension: IExtension) => {
       return this.startExtension(extension);
     }));
@@ -68,12 +69,10 @@ export class ExtensionBootstrapper {
 
   private _discoverExtensions(): Promise<Array<IExtension>> {
     const discoveredExtensionKeys: Array<string> = this._discoverExtensionKeys(this.extensionDiscoveryTag);
+
     return Promise.all(discoveredExtensionKeys.map((extensionKey: string) => {
       return this.container.resolveAsync<IExtension>(extensionKey);
-    }))
-    .catch((error: Error) => {
-      throw error;
-    });
+    }));
   }
 
 }
