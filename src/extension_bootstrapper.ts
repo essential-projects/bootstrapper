@@ -1,4 +1,4 @@
-import {runtime} from '@process-engine-js/foundation';
+import {runtime} from '@essential-projects/foundation';
 import {Container, IInstanceWrapper} from 'addict-ioc';
 
 export interface IExtension {
