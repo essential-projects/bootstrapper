@@ -5,6 +5,7 @@ export interface IExtension {
   name?: string;
 
   start(): Promise<void>;
+  stop(): Promise<void>;
 }
 
 export class ExtensionBootstrapper {
