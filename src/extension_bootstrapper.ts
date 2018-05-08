@@ -68,7 +68,7 @@ export class ExtensionBootstrapper {
     }));
   }
 
-  protected async stopExtensions(): Promise<Array<void>> {
+  protected async stopExtensions(): Promise<void> {
     for (const extensionInstance of this.extensionInstances) {
       await this.stopExtension(extensionInstance);
     }
