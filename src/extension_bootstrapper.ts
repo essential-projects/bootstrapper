@@ -5,6 +5,7 @@ export interface IExtension {
   name?: string;
 
   start(): Promise<void>;
+  stop(): Promise<void>;
 }
 
 export class ExtensionBootstrapper {
@@ -55,6 +56,10 @@ export class ExtensionBootstrapper {
     await this.startExtensions();
   }
 
+  public async stop(): Promise<void> {
+    await this.stopExtensions();
+  }
+
   protected async startExtensions(): Promise<Array<void>> {
     const extensions: Array<IExtension> = await this._discoverExtensions();
 
@@ -63,8 +68,19 @@ export class ExtensionBootstrapper {
     }));
   }
 
+  protected async stopExtensions(): Promise<void> {
+    for (const extensionInstance of this.extensionInstances) {
+      await this.stopExtension(extensionInstance);
+    }
+  }
+
+  protected async stopExtension(instance: IExtension): Promise<void> {
+    await runtime.invokeAsPromiseIfPossible(instance.stop, instance);
+  }
+
   protected async startExtension(instance: IExtension): Promise<void> {
     await runtime.invokeAsPromiseIfPossible(instance.start, instance);
+    this.extensionInstances.push(instance);
   }
 
   private _discoverExtensions(): Promise<Array<IExtension>> {
