@@ -1,4 +1,3 @@
-import {runtime} from '@essential-projects/foundation';
 import {Container, IInstanceWrapper} from 'addict-ioc';
 
 export interface IExtension {
@@ -75,11 +74,11 @@ export class ExtensionBootstrapper {
   }
 
   protected async stopExtension(instance: IExtension): Promise<void> {
-    await runtime.invokeAsPromiseIfPossible(instance.stop, instance);
+    await this.invokeAsPromiseIfPossible(instance.stop, instance);
   }
 
   protected async startExtension(instance: IExtension): Promise<void> {
-    await runtime.invokeAsPromiseIfPossible(instance.start, instance);
+    await this.invokeAsPromiseIfPossible(instance.start, instance);
     this.extensionInstances.push(instance);
   }
 
@@ -89,6 +88,30 @@ export class ExtensionBootstrapper {
     return Promise.all(discoveredExtensionKeys.map((extensionKey: string) => {
       return this.container.resolveAsync<IExtension>(extensionKey);
     }));
+  }
+
+  // Taken from the foundation, to remove the need for that package.
+  private invokeAsPromiseIfPossible(functionToInvoke: any, invocationContext: any, invocationParameter?: Array<any>): Promise<any> {
+
+    return new Promise((resolve: any, reject: any): void => {
+
+      const isValidFunction: boolean = functionToInvoke !== undefined &&
+                                       functionToInvoke !== null &&
+                                       typeof functionToInvoke === 'function';
+
+      if (!isValidFunction) {
+        return resolve();
+      }
+
+      let result: any;
+      try {
+        result = functionToInvoke.call(invocationContext, invocationParameter);
+      } catch (error) {
+        return reject(error);
+      }
+
+      resolve(result);
+    });
   }
 
 }
