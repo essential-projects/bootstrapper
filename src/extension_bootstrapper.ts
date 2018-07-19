@@ -96,17 +96,10 @@ export class ExtensionBootstrapper {
     const isValidFunction: boolean = typeof functionToInvoke === 'function';
 
     if (!isValidFunction) {
-      return Promise.resolve();
+      return;
     }
 
-    let result: any;
-    try {
-      result = await functionToInvoke.call(invocationContext, invocationParameter);
-    } catch (error) {
-      return Promise.reject(error);
-    }
-
-    return result;
+    return await functionToInvoke.call(invocationContext, invocationParameter);
   }
 
 }
