@@ -84,10 +84,10 @@ export class ExtensionBootstrapper {
   protected async disposeByTags(): Promise<void> {
     const discoveredDisposableKeys: Array<string> = this.container.getKeysByTags(disposableDiscoveryTag);
 
-    await Promise.all(discoveredDisposableKeys.map(async(extensionKey: string) => {
-      const instance: any = await this.container.resolveAsync<IExtension>(extensionKey);
+    for (const registrationKey of discoveredDisposableKeys) {
+      const instance: any = await this.container.resolveAsync<IExtension>(registrationKey);
       await this.invokeAsPromiseIfPossible(instance.dispose, instance);
-    }));
+    }
   }
 
   protected _discoverExtensions(): Promise<Array<IExtension>> {
