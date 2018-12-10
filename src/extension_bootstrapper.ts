@@ -1,5 +1,7 @@
 import {Container, IInstanceWrapper} from 'addict-ioc';
 
+import {disposableDiscoveryTag, extensionDiscoveryTag} from '@essential-projects/bootstrapper_contracts';
+
 export interface IExtension {
   name?: string;
 
@@ -13,12 +15,12 @@ export class ExtensionBootstrapper {
   private _extensionDiscoveryTag: string;
   private _extensionInstances: Array<IExtension> = [];
 
-  constructor(_container: Container<IInstanceWrapper<any>>, _extensionDiscoveryTag: string) {
+  constructor(container: Container<IInstanceWrapper<any>>, customExtensionDiscoveryTag: string) {
 
-    this._container = _container;
-    this._extensionDiscoveryTag = _extensionDiscoveryTag;
+    this._container = container;
+    this._extensionDiscoveryTag = customExtensionDiscoveryTag || extensionDiscoveryTag;
 
-    if (typeof _container === 'undefined') {
+    if (typeof container === 'undefined') {
       throw new Error('IoC container is required.');
     }
 
@@ -47,16 +49,13 @@ export class ExtensionBootstrapper {
     }
   }
 
-  protected _discoverExtensionKeys(extensionDiscoveryTag: string): Array<string> {
-    return this.container.getKeysByTags(extensionDiscoveryTag);
-  }
-
   public async start(): Promise<void> {
     await this.startExtensions();
   }
 
   public async stop(): Promise<void> {
     await this.stopExtensions();
+    await this.disposeByTags();
   }
 
   protected async startExtensions(): Promise<Array<void>> {
@@ -65,6 +64,11 @@ export class ExtensionBootstrapper {
     return Promise.all(extensions.map((extension: IExtension) => {
       return this.startExtension(extension);
     }));
+  }
+
+  protected async startExtension(instance: IExtension): Promise<void> {
+    await this.invokeAsPromiseIfPossible(instance.start, instance);
+    this.extensionInstances.push(instance);
   }
 
   protected async stopExtensions(): Promise<void> {
@@ -77,24 +81,26 @@ export class ExtensionBootstrapper {
     await this.invokeAsPromiseIfPossible(instance.stop, instance);
   }
 
-  protected async startExtension(instance: IExtension): Promise<void> {
-    await this.invokeAsPromiseIfPossible(instance.start, instance);
-    this.extensionInstances.push(instance);
+  protected async disposeByTags(): Promise<void> {
+    const discoveredDisposableKeys: Array<string> = this.container.getKeysByTags(disposableDiscoveryTag);
+
+    await Promise.all(discoveredDisposableKeys.map(async(extensionKey: string) => {
+      const instance: any = await this.container.resolveAsync<IExtension>(extensionKey);
+      await this.invokeAsPromiseIfPossible(instance.dispose, instance);
+    }));
   }
 
-  private _discoverExtensions(): Promise<Array<IExtension>> {
-    const discoveredExtensionKeys: Array<string> = this._discoverExtensionKeys(this.extensionDiscoveryTag);
+  protected _discoverExtensions(): Promise<Array<IExtension>> {
+    const discoveredExtensionKeys: Array<string> = this.container.getKeysByTags(this.extensionDiscoveryTag);
 
     return Promise.all(discoveredExtensionKeys.map((extensionKey: string) => {
       return this.container.resolveAsync<IExtension>(extensionKey);
     }));
   }
 
-  // Taken from the foundation, to remove the need for that package.
   private async invokeAsPromiseIfPossible(functionToInvoke: any, invocationContext: any, invocationParameter?: Array<any>): Promise<any> {
 
     const isValidFunction: boolean = typeof functionToInvoke === 'function';
-
     if (!isValidFunction) {
       return;
     }
