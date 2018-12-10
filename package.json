@@ -13,7 +13,7 @@
     "Sebastian Meier <sebastian.meier@5minds.de>"
   ],
   "dependencies": {
-    "@essential-projects/bootstrapper_contracts": "~1.2.0"
+    "@essential-projects/bootstrapper_contracts": "feature~implement_disposal_pattern"
   },
   "devDependencies": {
     "@essential-projects/tslint-config": "^1.1.3",
