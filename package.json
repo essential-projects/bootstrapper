@@ -3,7 +3,7 @@
   "publishConfig": {
     "registry": "https://www.npmjs.com"
   },
-  "version": "3.2.3",
+  "version": "3.3.0",
   "description": "the bootstrapper to start an application",
   "license": "MIT",
   "main": "dist/commonjs/index.js",
@@ -12,6 +12,9 @@
     "Christian Werner <christian.werner@5minds.de>",
     "Sebastian Meier <sebastian.meier@5minds.de>"
   ],
+  "dependencies": {
+    "@essential-projects/bootstrapper_contracts": "~1.3.0"
+  },
   "devDependencies": {
     "@essential-projects/tslint-config": "^1.1.3",
     "addict-ioc": "~2.5.1",
