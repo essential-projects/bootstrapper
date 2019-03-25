@@ -90,12 +90,17 @@ export class ExtensionBootstrapper {
     }
   }
 
-  protected _discoverExtensions(): Promise<Array<IExtension>> {
+  protected async _discoverExtensions(): Promise<Array<IExtension>> {
     const discoveredExtensionKeys: Array<string> = this.container.getKeysByTags(this.extensionDiscoveryTag);
+    
+    const instances: Array<any> = [];
+    
+    for (const registrationKey of discoveredExtensionKeys) {
+      const instance: any = await this.container.resolveAsync<IExtension>(registrationKey);
+      instances.push(instance);
+    }
 
-    return Promise.all(discoveredExtensionKeys.map((extensionKey: string) => {
-      return this.container.resolveAsync<IExtension>(extensionKey);
-    }));
+    return instances;
   }
 
   private async invokeAsPromiseIfPossible(functionToInvoke: any, invocationContext: any, invocationParameter?: Array<any>): Promise<any> {
