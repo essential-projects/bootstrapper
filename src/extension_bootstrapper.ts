@@ -1,3 +1,4 @@
+/* eslint-disable no-return-await */
 import {Container, IInstanceWrapper} from 'addict-ioc';
 
 import {IDisposable, disposableDiscoveryTag, extensionDiscoveryTag} from '@essential-projects/bootstrapper_contracts';
@@ -99,7 +100,7 @@ export class ExtensionBootstrapper {
       return Promise.resolve();
     }
 
-    return functionToInvoke.call(invocationContext, invocationParameter);
+    return await functionToInvoke.call(invocationContext, invocationParameter);
   }
 
 }
