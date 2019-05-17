@@ -13,7 +13,7 @@
     "Sebastian Meier <sebastian.meier@5minds.de>"
   ],
   "dependencies": {
-    "@essential-projects/bootstrapper_contracts": "~1.3.0",
+    "@essential-projects/bootstrapper_contracts": "feature~change_to_eslint_and_tsc",
     "addict-ioc": "^2.5.1"
   },
   "devDependencies": {
