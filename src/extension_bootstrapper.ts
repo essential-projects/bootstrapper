@@ -1,6 +1,7 @@
+/* eslint-disable no-return-await */
 import {Container, IInstanceWrapper} from 'addict-ioc';
 
-import {disposableDiscoveryTag, extensionDiscoveryTag} from '@essential-projects/bootstrapper_contracts';
+import {IDisposable, disposableDiscoveryTag, extensionDiscoveryTag} from '@essential-projects/bootstrapper_contracts';
 
 export interface IExtension {
   name?: string;
@@ -11,37 +12,26 @@ export interface IExtension {
 
 export class ExtensionBootstrapper {
 
-  private _container: Container<IInstanceWrapper<any>>;
-  private _extensionDiscoveryTag: string;
-  private _extensionInstances: Array<IExtension> = [];
+  public readonly extensionDiscoveryTag: string;
+  public readonly extensionInstances: Array<IExtension> = [];
+
+  protected container: Container<IInstanceWrapper<any>>;
 
   constructor(container: Container<IInstanceWrapper<any>>, customExtensionDiscoveryTag: string) {
 
-    this._container = container;
-    this._extensionDiscoveryTag = customExtensionDiscoveryTag || extensionDiscoveryTag;
+    this.container = container;
+    this.extensionDiscoveryTag = customExtensionDiscoveryTag || extensionDiscoveryTag;
 
     if (typeof container === 'undefined') {
       throw new Error('IoC container is required.');
     }
 
-    this._registerInstanceToIocContainer(this);
+    this.registerInstanceToIocContainer(this);
   }
 
-  protected get container(): Container<IInstanceWrapper<any>> {
-    return this._container;
-  }
+  protected registerInstanceToIocContainer(instance: IExtension): void {
 
-  public get extensionDiscoveryTag(): string {
-    return this._extensionDiscoveryTag;
-  }
-
-  public get extensionInstances(): Array<IExtension> {
-    return this._extensionInstances;
-  }
-
-  protected _registerInstanceToIocContainer(instance: IExtension): void {
-
-    const registrationKey: string = `${this.extensionDiscoveryTag}Bootstrapper`;
+    const registrationKey = `${this.extensionDiscoveryTag}Bootstrapper`;
 
     if (!this.container.isRegistered(registrationKey)) {
 
@@ -59,9 +49,9 @@ export class ExtensionBootstrapper {
   }
 
   protected async startExtensions(): Promise<Array<void>> {
-    const extensions: Array<IExtension> = await this._discoverExtensions();
+    const extensions = await this.discoverExtensions();
 
-    return Promise.all(extensions.map((extension: IExtension) => {
+    return Promise.all(extensions.map((extension: IExtension): Promise<void> => {
       return this.startExtension(extension);
     }));
   }
@@ -85,29 +75,29 @@ export class ExtensionBootstrapper {
     const discoveredDisposableKeys: Array<string> = this.container.getKeysByTags(disposableDiscoveryTag);
 
     for (const registrationKey of discoveredDisposableKeys) {
-      const instance: any = await this.container.resolveAsync<IExtension>(registrationKey);
+      const instance = await this.container.resolveAsync<IDisposable>(registrationKey);
       await this.invokeAsPromiseIfPossible(instance.dispose, instance);
     }
   }
 
-  protected async _discoverExtensions(): Promise<Array<IExtension>> {
+  protected async discoverExtensions(): Promise<Array<IExtension>> {
     const discoveredExtensionKeys: Array<string> = this.container.getKeysByTags(this.extensionDiscoveryTag);
-    
-    const instances: Array<any> = [];
-    
+
+    const extensionInstances: Array<IExtension> = [];
+
     for (const registrationKey of discoveredExtensionKeys) {
-      const instance: any = await this.container.resolveAsync<IExtension>(registrationKey);
-      instances.push(instance);
+      const instance = await this.container.resolveAsync<IExtension>(registrationKey);
+      extensionInstances.push(instance);
     }
 
-    return instances;
+    return extensionInstances;
   }
 
   private async invokeAsPromiseIfPossible(functionToInvoke: any, invocationContext: any, invocationParameter?: Array<any>): Promise<any> {
 
-    const isValidFunction: boolean = typeof functionToInvoke === 'function';
+    const isValidFunction = typeof functionToInvoke === 'function';
     if (!isValidFunction) {
-      return;
+      return Promise.resolve();
     }
 
     return await functionToInvoke.call(invocationContext, invocationParameter);
